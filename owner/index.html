@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FamilyFi Owner Console</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#f7f4ee">
+<link rel="icon" href="../icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script>window.FF_OWNER_PAGE = true;</script>
+<script src="../config.js"></script>
+<script src="https://accounts.google.com/gsi/client"></script>
+<script src="../bridge.js"></script>
+<style>
+:root{--paper:#f7f4ee;--paper-2:#efe9de;--card:#fff;--ink:#13231f;--ink-2:#2d3c38;--muted:#5d6a66;--line:#e3dccf;--green:#0e5a4f;--green-2:#0a463e;--green-3:#e3efe9;--saffron:#e0a03a;--saffron-2:#fbefd8;--red:#a3261a;--red-2:#fdeceb;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:-.01em;margin:0;line-height:1.15}
+.wrap{max-width:1400px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{position:sticky;top:0;z-index:5;background:rgba(247,244,238,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;gap:12px;min-height:62px;flex-wrap:wrap;padding-block:8px}
+.logo{display:flex;align-items:center;gap:10px}.logo i{width:34px;height:34px;border-radius:10px;background:var(--green);color:#fff;display:grid;place-items:center;font:700 18px Georgia,serif;font-style:normal}
+.logo b{font:600 19px Fraunces,Georgia,serif}.logo small{display:block;font:600 10px Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.who{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--muted);min-width:0}
+.who span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:0 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font:600 13.5px Inter,sans-serif;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn:hover{border-color:var(--green)}.btn.pri{background:var(--green);border-color:var(--green);color:#fff}.btn.pri:hover{background:var(--green-2)}
+.btn.sm{min-height:30px;padding:0 10px;font-size:12.5px}.btn.warn{color:var(--red)}.btn[disabled]{opacity:.5;pointer-events:none}
+main{padding-block:22px 60px;display:flex;flex-direction:column;gap:18px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:12px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px}
+.kpi small{display:block;font:600 11.5px Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.kpi b{display:block;font:600 30px/1.1 Fraunces,Georgia,serif;margin-top:6px}.kpi span{font-size:13px;color:var(--muted)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tabs button{border:1.5px solid var(--line);background:var(--card);color:var(--ink-2);border-radius:999px;padding:8px 16px;font:600 14px Inter,sans-serif;cursor:pointer}
+.tabs button[aria-selected=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;min-width:0}
+.panel>header{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}.panel>header h2{font-size:21px;margin-right:auto}
+.inp{font:inherit;border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;background:#fff;color:var(--ink);min-height:38px;min-width:0}
+.inp:focus{outline:2px solid rgba(14,90,79,.25);border-color:var(--green)}
+select.inp{padding-right:28px}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-inline:-4px}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:760px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font:600 11.5px Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+td .sub{display:block;font-size:12.5px;color:var(--muted)}
+.chip{display:inline-block;border-radius:999px;padding:2px 10px;font:600 12px Inter,sans-serif;white-space:nowrap}
+.c-active{background:var(--green-3);color:var(--green)}.c-trial{background:var(--saffron-2);color:#7a4b06}.c-expired,.c-revoked{background:var(--red-2);color:var(--red)}.c-owner{background:#e8e6f6;color:#3d3780}.c-sent{background:var(--green-3);color:var(--green)}.c-other{background:var(--paper-2);color:var(--ink-2)}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:18px}
+.form{display:grid;gap:10px}.form label{display:grid;gap:4px;font:600 13px Inter,sans-serif;color:var(--ink-2)}
+.form .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media (max-width:520px){.form .row{grid-template-columns:1fr}}
+.sub{color:var(--muted);font-size:13.5px}.note{background:var(--saffron-2);border-radius:12px;padding:10px 14px;font-size:13.5px;color:#5a3a06}
+.empty{padding:28px;text-align:center;color:var(--muted)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;z-index:50;max-width:calc(100% - 32px);font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+textarea.inp{min-height:110px;font:12.5px ui-monospace,Consolas,monospace}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="logo"><i>F</i><div><b>Owner console</b><small>FamilyFi · online + offline</small></div></div>
+  <div class="who"><span id="who"></span><button class="btn sm" id="refresh" type="button">Refresh</button><button class="btn sm" id="out" type="button">Sign out</button></div>
+</div></header>
+<main class="wrap" id="main">
+  <div class="panel empty" id="loading">Loading customers…</div>
+</main>
+<script>
+(function(){
+var A=null, O=null, tab='online', q='', f='all', armed=null;
+var $=function(s){return document.querySelector(s)};
+function esc(t){return String(t==null?'':t).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function nice(ymd){ if(!ymd) return ''; var m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return Number(ymd.slice(8,10))+' '+m[Number(ymd.slice(5,7))-1]+' '+ymd.slice(0,4); }
+function when(iso){ try{ return new Date(iso).toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }catch(e){ return iso; } }
+function money(n){ return '₹'+Number(n||0).toLocaleString('en-IN'); }
+function toast(t){ var d=document.createElement('div'); d.className='toast'; d.textContent=t; document.body.appendChild(d); setTimeout(function(){d.remove()},3600); }
+function busy(on){ document.querySelectorAll('button').forEach(function(b){ if(b.id!=='out') b.disabled=!!on; }); }
+function act(fn){ var args=[].slice.call(arguments,1); busy(true);
+  return FFB.api.apply(null,[fn].concat(args)).then(function(r){ busy(false); return r; },function(e){ busy(false); toast('Failed: '+((e&&e.message)||e)); throw e; }); }
+
+function load(){ return Promise.all([act('adminList'), act('offlineList').catch(function(){ return {rows:[]}; })]).then(function(r){ A=r[0]; O=r[1]; render(); }); }
+
+function kpis(){
+  var c=(A&&A.customers)||[], rows=(O&&O.rows)||[];
+  var act_=c.filter(function(x){return x.status==='active'}).length, tr=c.filter(function(x){return x.status==='trial'}).length;
+  var soon=c.filter(function(x){return (x.status==='active'||x.status==='trial')&&x.daysLeft<=7}).length;
+  var off=rows.filter(function(r){return /^FFP-/.test(r.id)}).length;
+  var paid=rows.reduce(function(s,r){return s+(Number(r.amount)||0)},0);
+  return '<div class="kpis">'+
+    '<div class="kpi"><small>Paying online</small><b>'+act_+'</b><span>active monthly / yearly</span></div>'+
+    '<div class="kpi"><small>Free trials</small><b>'+tr+'</b><span>'+((A&&A.trialDays)||15)+'-day trial</span></div>'+
+    '<div class="kpi"><small>Ending in 7 days</small><b>'+soon+'</b><span>send a renewal reminder</span></div>'+
+    '<div class="kpi"><small>Offline licences</small><b>'+off+'</b><span>lifetime copies sent</span></div>'+
+    '<div class="kpi"><small>Payments logged</small><b>'+money(paid)+'</b><span>Razorpay, from the log sheet</span></div></div>';
+}
+function online(){
+  var c=((A&&A.customers)||[]).filter(function(x){ var s=(x.email+' '+x.name+' '+x.ref).toLowerCase(); return (!q||s.indexOf(q.toLowerCase())>=0)&&(f==='all'||x.status===f); });
+  var plans=(A&&A.pricing&&A.pricing.plans)||[];
+  return '<section class="panel"><header><h2>Online customers</h2><input class="inp" id="q" placeholder="Search email, name, payment" value="'+esc(q)+'">'+
+    '<select class="inp" id="f">'+['all','active','trial','expired','revoked'].map(function(k){return '<option value="'+k+'"'+(f===k?' selected':'')+'>'+(k==='all'?'All':k[0].toUpperCase()+k.slice(1))+'</option>'}).join('')+'</select>'+
+    '<button class="btn sm" id="csv" type="button">Download CSV</button></header>'+
+    (c.length?'<div class="scroll"><table><thead><tr><th>Customer</th><th>Plan</th><th>Status</th><th>Ends</th><th>Payment</th><th>Actions</th></tr></thead><tbody>'+
+    c.map(function(x){ var st=x.status; var left=x.daysLeft;
+      return '<tr><td><b>'+esc(x.email)+'</b><span class="sub">'+(esc(x.name)||'<i>no name</i>')+' · since '+esc(nice(x.start))+'</span></td>'+
+        '<td>'+esc(x.planName||x.plan)+'</td><td><span class="chip c-'+esc(st)+'">'+esc(st)+'</span></td>'+
+        '<td>'+esc(nice(x.expires))+'<span class="sub">'+(left<0?Math.abs(left)+' days ago':left+' days left')+'</span></td><td><span class="sub">'+esc(x.ref)+'</span></td>'+
+        '<td><div class="acts"><select class="inp sm" data-ext="'+esc(x.email)+'" style="min-height:30px;padding:2px 8px;font-size:12.5px"><option value="">Extend…</option>'+plans.map(function(p){return '<option value="'+p.id+'">+ '+esc(p.name)+' ('+p.days+' d)</option>'}).join('')+'</select>'+
+        '<button class="btn sm" data-ren="'+esc(x.email)+'" data-name="'+esc(x.name)+'">Rename</button>'+
+        (st==='revoked'?'<button class="btn sm" data-res="'+esc(x.email)+'">Restore</button>':'<button class="btn sm warn" data-rev="'+esc(x.email)+'">'+(armed==='rev:'+x.email?'Confirm stop':'Stop')+'</button>')+
+        '<button class="btn sm warn" data-del="'+esc(x.email)+'">'+(armed==='del:'+x.email?'Confirm delete':'Delete')+'</button></div></td></tr>'; }).join('')+
+    '</tbody></table></div>':'<div class="empty">No customers'+(q||f!=='all'?' match this search.':' yet. New Gmail accounts appear here when they start the free trial.')+'</div>')+'</section>';
+}
+function offline(){
+  var rows=((O&&O.rows)||[]).filter(function(r){ var s=(r.email+' '+r.name+' '+r.id+' '+r.ref).toLowerCase(); return !q||s.indexOf(q.toLowerCase())>=0; });
+  return '<section class="panel"><header><h2>Payments &amp; offline licences</h2><input class="inp" id="q" placeholder="Search email, name, licence" value="'+esc(q)+'">'+
+    (O&&O.sheetUrl?'<a class="btn sm" target="_blank" rel="noopener" href="'+esc(O.sheetUrl)+'">Open log sheet</a>':'')+'</header>'+
+    '<p class="sub" style="margin:-4px 0 10px">Every Razorpay payment the server handled: offline copies sent, and online plans switched on automatically.</p>'+
+    (rows.length?'<div class="scroll"><table><thead><tr><th>When</th><th>Buyer</th><th>What</th><th>Amount</th><th>Licence / status</th><th>Actions</th></tr></thead><tbody>'+
+    rows.map(function(r){ var isOff=/^FFP-/.test(r.id);
+      return '<tr><td>'+esc(when(r.when))+'<span class="sub">'+esc(r.ref)+'</span></td><td><b>'+esc(r.name)+'</b><span class="sub">'+esc(r.email)+(r.phone?' · '+esc(r.phone):'')+'</span></td>'+
+        '<td>'+(isOff?'Offline · lifetime':esc(r.what))+'</td><td>'+(r.amount?money(r.amount):'—')+'</td>'+
+        '<td>'+(isOff?'<b>'+esc(r.id)+'</b>':'')+'<span class="sub"><span class="chip '+(/sent|active/.test(r.status)?'c-sent':'c-other')+'">'+esc(r.status||'—')+'</span></span></td>'+
+        '<td><div class="acts">'+(isOff?'<button class="btn sm" data-resend="'+esc(r.id)+'">Resend email</button>':'')+(r.link?'<a class="btn sm" target="_blank" rel="noopener" href="'+esc(r.link)+'">Drive file</a>':'')+'</div></td></tr>'; }).join('')+
+    '</tbody></table></div>':'<div class="empty">Nothing yet. Razorpay payments are checked every 15 minutes.</div>')+'</section>';
+}
+function add(){
+  var plans=(A&&A.pricing&&A.pricing.plans)||[];
+  return '<div class="grid2">'+
+   '<section class="panel"><header><h2>Give online access</h2></header><div class="form">'+
+    '<label>Customer Gmail<input class="inp" id="a-email" type="email" placeholder="name@gmail.com" autocomplete="off"></label>'+
+    '<div class="row"><label>Name shown in their app<input class="inp" id="a-name" placeholder="Sharma Family"></label>'+
+    '<label>Plan<select class="inp" id="a-plan">'+plans.map(function(p){return '<option value="'+p.id+'">'+esc(p.name)+' · '+p.days+' days</option>'}).join('')+'<option value="trial">Free trial · '+((A&&A.trialDays)||15)+' days</option></select></label></div>'+
+    '<label>Payment reference (optional)<input class="inp" id="a-ref" placeholder="pay_… or UPI ref"></label>'+
+    '<button class="btn pri" id="a-save" type="button">Save access</button>'+
+    '<p class="sub">If they already have a paid plan, the new period starts after their current end date.</p></div></section>'+
+   '<section class="panel"><header><h2>Send an offline licence</h2></header><div class="form">'+
+    '<div class="row"><label>Buyer name<input class="inp" id="o-name" placeholder="Asha Mehta"></label><label>Buyer email<input class="inp" id="o-email" type="email" placeholder="name@gmail.com"></label></div>'+
+    '<div class="row"><label>Amount ₹<input class="inp" id="o-amt" type="number" inputmode="numeric" placeholder="699"></label><label>Payment reference<input class="inp" id="o-ref" placeholder="UPI / cash / pay_…"></label></div>'+
+    '<button class="btn pri" id="o-send" type="button">Create licence &amp; email it</button>'+
+    '<p class="sub">For payments outside Razorpay. Razorpay payments are sent automatically.</p></div></section>'+
+   '<section class="panel"><header><h2>Razorpay</h2></header><p class="sub">The server checks new payments every 15 minutes'+(A&&A.auto?' (on ✓)':' — <b>not switched on yet: run setup in the FamilyFi Server project</b>')+'. Online plans switch on by themselves; offline buyers get their file by email.</p>'+
+    '<button class="btn" id="check" type="button">Check payments now</button></section>'+
+   '<section class="panel"><header><h2>Bring customers from the old app</h2></header>'+
+    '<p class="sub">In the OLD online app\'s Apps Script project, choose <b>listCustomers</b> and press Run. Copy everything in the Execution log and paste it here.</p>'+
+    '<div class="form"><textarea class="inp" id="imp" placeholder="name@gmail.com  {&quot;plan&quot;:&quot;yearly&quot;,…}"></textarea><button class="btn" id="imp-go" type="button">Import</button></div></section>'+
+  '</div>';
+}
+function render(){
+  $('#who').textContent=FFB.email()||'';
+  var m=$('#main');
+  m.innerHTML=kpis()+'<div class="tabs" role="tablist">'+[['online','Online customers'],['offline','Payments & offline'],['add','Add & tools']].map(function(t){return '<button role="tab" type="button" data-tab="'+t[0]+'" aria-selected="'+(tab===t[0])+'">'+t[1]+'</button>'}).join('')+'</div>'+
+    (tab==='online'?online():tab==='offline'?offline():add());
+  wire();
+}
+function upd(r){ if(r&&r.customers) A=r; if(r&&r.rows) O=r; if(r&&r.list) O=r.list; if(r&&r.admin) A=r.admin; render(); }
+function wire(){
+  document.querySelectorAll('[data-tab]').forEach(function(b){ b.onclick=function(){ tab=b.dataset.tab; q=''; armed=null; render(); }; });
+  var qi=$('#q'); if(qi) qi.oninput=function(){ q=qi.value; var p=qi.selectionStart; render(); var n=$('#q'); n.focus(); n.setSelectionRange(p,p); };
+  var fs=$('#f'); if(fs) fs.onchange=function(){ f=fs.value; render(); };
+  document.querySelectorAll('[data-ext]').forEach(function(s){ s.onchange=function(){ if(s.value) act('adminSave',{email:s.dataset.ext,plan:s.value}).then(function(r){ toast('Extended'); upd(r); }); }; });
+  document.querySelectorAll('[data-ren]').forEach(function(b){ b.onclick=function(){ var td=b.closest('tr').querySelector('td'); var cur=b.dataset.name||'';
+    td.querySelector('.sub').innerHTML='<span style="display:flex;gap:6px;margin-top:4px"><input class="inp" style="min-height:30px;padding:4px 8px" value="'+esc(cur)+'" maxlength="60"><button class="btn sm pri">Save</button></span>';
+    var i=td.querySelector('input'); i.focus(); td.querySelector('.btn').onclick=function(){ act('adminRename',{email:b.dataset.ren,name:i.value}).then(function(r){ toast('Name saved'); upd(r); }); }; }; });
+  document.querySelectorAll('[data-rev]').forEach(function(b){ b.onclick=function(){ var k='rev:'+b.dataset.rev; if(armed!==k){ armed=k; render(); return; } armed=null; act('adminRevoke',b.dataset.rev).then(function(r){ toast('Access stopped'); upd(r); }); }; });
+  document.querySelectorAll('[data-res]').forEach(function(b){ b.onclick=function(){ act('adminRestore',b.dataset.res).then(function(r){ toast('Access restored'); upd(r); }); }; });
+  document.querySelectorAll('[data-del]').forEach(function(b){ b.onclick=function(){ var k='del:'+b.dataset.del; if(armed!==k){ armed=k; render(); return; } armed=null; act('adminDelete',b.dataset.del).then(function(r){ toast('Customer deleted'); upd(r); }); }; });
+  document.querySelectorAll('[data-resend]').forEach(function(b){ b.onclick=function(){ act('offlineResend',b.dataset.resend).then(function(r){ toast('Email sent again'); upd(r); }); }; });
+  var c=$('#csv'); if(c) c.onclick=function(){ var rows=[['Email','Name','Plan','Status','Start','Ends','Days left','Payment ref']].concat(((A&&A.customers)||[]).map(function(x){return [x.email,x.name,x.planName,x.status,x.start,x.expires,x.daysLeft,x.ref]}));
+    var t=rows.map(function(r){return r.map(function(v){ v=String(v==null?'':v); return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }).join(',')}).join('\n');
+    var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'})); a.download='familyfi_customers.csv'; a.click(); };
+  var s=$('#a-save'); if(s) s.onclick=function(){ var e=$('#a-email').value.trim(); if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)){ toast('Type a valid Gmail'); return; }
+    act('adminSave',{email:e,name:$('#a-name').value,plan:$('#a-plan').value,ref:$('#a-ref').value}).then(function(r){ toast('Access saved for '+e); A=r; tab='online'; render(); }); };
+  var o=$('#o-send'); if(o) o.onclick=function(){ var e=$('#o-email').value.trim(); if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)){ toast('Type a valid email'); return; }
+    act('offlineIssue',{name:$('#o-name').value,email:e,amount:$('#o-amt').value,ref:$('#o-ref').value}).then(function(r){ toast('Licence '+r.id+' emailed to '+e); O=r.list; tab='offline'; render(); }); };
+  var k=$('#check'); if(k) k.onclick=function(){ act('checkNow').then(function(r){ toast('Payments checked'); A=r.admin; O=r.list; render(); }); };
+  var im=$('#imp-go'); if(im) im.onclick=function(){ act('adminImport',$('#imp').value).then(function(r){ toast('Imported '+r.imported+' customers'); A=r; tab='online'; render(); }); };
+}
+$('#out').onclick=function(){ FFB.signOut(); };
+$('#refresh').onclick=function(){ load().then(function(){ toast('Up to date'); }); };
+FFB.ready.then(function(L){
+  if(!L||!L.isOwner){ document.getElementById('main').innerHTML='<div class="panel empty"><h2>Owner only</h2><p>You are signed in as <b>'+esc(L&&L.email)+'</b>. Sign in with the owner Gmail (familyfi.app@gmail.com).</p><button class="btn" onclick="FFB.signOut()">Use another account</button></div>'; return; }
+  load();
+});
+})();
+</script>
+</body>
+</html>
